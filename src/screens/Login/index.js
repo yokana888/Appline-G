@@ -3,9 +3,8 @@ import { Text, TextInput, TouchableOpacity, Alert, StyleSheet, View, Image } fro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from "../../assets/theme/colors";
 import MSSQL from 'react-native-mssql';
-import {HOME_NAVIGATOR, LOGIN} from '../../constants/routeName';
 import Container from "../../components/common/Container";
-import Loader from "../../components/common/Container";
+import Loader from "../../components/common/Container/loader";
 
 const Login = ({navigation}) => {
 
@@ -29,30 +28,33 @@ const Login = ({navigation}) => {
     }
        
     const LoggedIn = async() => {
-            const config = {
-                server: '192.168.1.6', //ip address of the mssql database
-                username: 'sa', //username to login to the database
-                password: 'AdminDL-dev-123', //password to login to the database
-                database: 'CobaSql', //the name of the database to connect to
-            };
+          const config = {
+              server: '192.168.1.6', //ip address of the mssql database
+              username: 'sa', //username to login to the database
+              password: 'AdminDL-dev-123', //password to login to the database
+              database: 'CobaSql', //the name of the database to connect to
+          };
 
+          try {
             const connected = await MSSQL.connect(config);
+            console.log(connected);
             if(connected) {
-                const query = "SELECT TOP(1) * FROM Biodata Where Nama = '"+username+"'";
-                const result = await MSSQL.executeQuery(query);
-                if(result.length > 0) {
-                    AsyncStorage.setItem('username', username);
-                    navigation.replace('DrawerNavigator');
-                } else {
-                    Alert.alert('Invalid Credential');
-                }
+              const query = "SELECT TOP(1) * FROM Biodata WHERE nama = '"+username+"'";
+              const result = await MSSQL.executeQuery(query);
+              if(result.length > 0) {
+                AsyncStorage.setItem('username', username);
+                navigation.replace('DrawerNavigator');
+              } else {
+                Alert.alert('Invalid Credential');
+              }
 
-                await MSSQL.close();
-            } else {
-                Alert.alert('Error Connecting to Database');
+              await MSSQL.close();
             }
+          } catch {
+            Alert.alert('Error Connecting to Database');
+          }
 
-            setLoading(false);
+          setLoading(false);
     }
 
     return (
