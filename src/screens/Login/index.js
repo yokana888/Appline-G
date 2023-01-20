@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Alert, StyleSheet, View, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from "../../assets/theme/colors";
 import MSSQL from 'react-native-mssql';
@@ -22,6 +22,7 @@ const Login = ({navigation}) => {
         } 
         if(!password){
             Alert.alert('Please Fill Password');
+            return;
         }
         setLoading(true);
         LoggedIn();
@@ -39,13 +40,14 @@ const Login = ({navigation}) => {
             if(connected) {
                 const query = "SELECT TOP(1) * FROM Biodata Where Nama = '"+username+"'";
                 const result = await MSSQL.executeQuery(query);
-                if(result){
+                if(result.length > 0) {
                     AsyncStorage.setItem('username', username);
                     navigation.replace('DrawerNavigator');
-                    console.log(username);
                 } else {
                     Alert.alert('Invalid Credential');
                 }
+
+                await MSSQL.close();
             } else {
                 Alert.alert('Error Connecting to Database');
             }
@@ -56,6 +58,17 @@ const Login = ({navigation}) => {
     return (
         <Container>
             <Loader loading={loading} />
+            <View style={{alignItems: 'center'}}>
+              <Image
+                source={require('../../assets/image/sewing-machine.png')}
+                style={{
+                  width: '50%',
+                  height: 100,
+                  resizeMode: 'contain',
+                  margin: 30,
+                }}
+              />
+            </View>
             <Text>Username</Text>
             <TextInput
                 style={{height: 40, borderColor: colors.grey, borderWidth: 1}}

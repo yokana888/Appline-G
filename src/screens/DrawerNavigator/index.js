@@ -44,7 +44,7 @@ const DrawerNavigator = (props) => {
   return (
     <Drawer.Navigator
       drawerContentOptions={{
-        activeTintColor: '#cee1f2',
+        activeTintColor: 'grey',
         color: '#cee1f2',
         itemStyle: {marginVertical: 5, color: 'white'},
         labelStyle: {
@@ -55,7 +55,7 @@ const DrawerNavigator = (props) => {
       drawerContent={Sidebar}>
       <Drawer.Screen
         name="homeScreenStack"
-        options={{drawerLabel: 'Home Screen'}}
+        options={{drawerLabel: 'Home'}}
         component={homeScreenStack}
       />
     </Drawer.Navigator>
